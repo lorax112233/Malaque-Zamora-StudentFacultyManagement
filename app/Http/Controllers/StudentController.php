@@ -2,103 +2,91 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Student;
+use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-    * @return \Illuminate\Http\JsonResponse
-     */
+    // Get students (active or archived)
     public function index(Request $request)
     {
         $query = Student::query();
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+
+        // Status filter
+        if ($request->status === 'archived') {
+            $query->onlyTrashed();
+        } else {
+            $query->whereNull('deleted_at');
         }
-        if ($request->has('department')) {
-            $query->where('department', $request->department);
-        }
-        if ($request->has('course')) {
-            $query->where('course', $request->course);
-        }
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-        return response()->json($query->get());
+
+        // Search and filters
+        if ($request->search) $query->where('name', 'like', "%{$request->search}%");
+        if ($request->course) $query->where('course', $request->course);
+        if ($request->department) $query->where('department', $request->department);
+
+        return response()->json($query->orderBy('id','desc')->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-    * @return \Illuminate\Http\JsonResponse
-     */
-    public function create()
-    {
-        return response()->json();
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\JsonResponse
-     */
+    // Add new student
     public function store(Request $request)
     {
-        $student = Student::create($request->only(['name', 'course', 'department', 'status']));
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'course' => 'required|string|max:255',
+            'department' => 'required|string|max:255',
+        ]);
+
+        $student = Student::create($validated);
+
         return response()->json($student, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-    * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        return response()->json();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-    * @return \Illuminate\Http\JsonResponse
-     */
-    public function edit($id)
-    {
-        return response()->json();
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-    * @return \Illuminate\Http\JsonResponse
-     */
+    // Update student
     public function update(Request $request, $id)
     {
-        $student = Student::findOrFail($id);
-        $student->update($request->only(['name', 'course', 'department', 'status']));
+        $student = Student::withTrashed()->findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'course' => 'required|string|max:255',
+            'department' => 'required|string|max:255',
+        ]);
+
+        $student->update($validated);
+
         return response()->json($student);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Archive student
     public function destroy($id)
     {
-        $student = Student::findOrFail($id);
-        $student->status = 'archived';
-        $student->save();
-        return response()->json(['message' => 'Student archived']);
+        Student::findOrFail($id)->delete();
+        return response()->json(['message' => 'Student archived successfully']);
+    }
+
+    // Restore archived student
+    public function restore($id)
+    {
+        Student::onlyTrashed()->findOrFail($id)->restore();
+        return response()->json(['message' => 'Student restored successfully']);
+    }
+
+    // Count active students (dashboard)
+    public function count()
+    {
+        $count = Student::whereNull('deleted_at')->count();
+        return response()->json(['count' => $count]);
+    }
+
+    // Count by department (dashboard chart)
+    public function byDepartment()
+    {
+        $data = Student::select('department')
+            ->selectRaw('COUNT(*) as count')
+            ->whereNull('deleted_at')
+            ->groupBy('department')
+            ->get();
+
+        return response()->json($data);
     }
 }

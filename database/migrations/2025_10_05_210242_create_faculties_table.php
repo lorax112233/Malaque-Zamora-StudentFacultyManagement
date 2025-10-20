@@ -6,27 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateFacultiesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('faculties', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('department');
-            $table->string('status')->default('active');
+            $table->string('status')->default('active'); // for active/archived
+            $table->softDeletes(); // enables soft delete
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('faculties');

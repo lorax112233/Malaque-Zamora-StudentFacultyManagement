@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateStudentsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('students', function (Blueprint $table) {
@@ -18,16 +13,11 @@ class CreateStudentsTable extends Migration
             $table->string('name');
             $table->string('course');
             $table->string('department');
-            $table->string('status')->default('active');
             $table->timestamps();
+            $table->softDeletes(); // for archiving
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('students');

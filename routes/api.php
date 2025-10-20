@@ -1,25 +1,26 @@
-
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\FacultyController;
-use App\Http\Controllers\AuthController; // ✅ added semicolon
+use App\Http\Controllers\AuthController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| These routes are loaded by the RouteServiceProvider within the "api"
-| middleware group. Build your API here.
-|
-*/
+// Authentication
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
 
-Route::post('/login', [AuthController::class, 'login']); // ✅ use controller method
+// Dashboard
+Route::get('/students/count', [StudentController::class, 'count']);
+Route::get('/students/by-department', [StudentController::class, 'byDepartment']);
+Route::get('/faculty/count', [FacultyController::class, 'count']);
+Route::get('/departments/count', [FacultyController::class, 'departments']);
 
+// Student & Faculty APIs
 Route::apiResource('students', StudentController::class);
+Route::put('/students/{id}/restore', [StudentController::class, 'restore']);
 Route::apiResource('faculties', FacultyController::class);
-Route::post('/logout', [AuthController::class, 'logout']);
+Route::put('/faculties/{id}/restore', [FacultyController::class, 'restore']);
+

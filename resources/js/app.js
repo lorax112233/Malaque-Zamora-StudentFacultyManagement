@@ -2,16 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import Layout from "./components/Layout.jsx";
-import Login from "./components/Login.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import Students from "./pages/Students.jsx";
-import Faculty from "./pages/Faculty.jsx";
-import Reports from "./pages/Reports.jsx";
-import Settings from "./pages/Settings.jsx";
-import Profile from "./pages/Profile.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import StatCard from "./components/StatCard.jsx";
+import Layout from "./components/Layout";
+import Login from "./components/Login";
+import Dashboard from "./pages/Dashboard";
+import Students from "./pages/Students";
+import Faculty from "./pages/Faculty";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
+import StatCard from "./components/StatCard";
 
 ReactDOM.render(
   <Router>
