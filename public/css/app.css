@@ -641,6 +641,9 @@ video {
 .max-w-7xl {
   max-width: 80rem;
 }
+.max-w-md {
+  max-width: 28rem;
+}
 .max-w-sm {
   max-width: 24rem;
 }
@@ -666,6 +669,9 @@ video {
 }
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .flex-col {
   flex-direction: column;
@@ -773,6 +779,10 @@ video {
 .border-\[\#014F4D\]\/40 {
   border-color: rgb(1 79 77 / 0.4);
 }
+.border-\[\#015E5C\] {
+  --tw-border-opacity: 1;
+  border-color: rgb(1 94 92 / var(--tw-border-opacity, 1));
+}
 .border-\[\#015E5C\]\/30 {
   border-color: rgb(1 94 92 / 0.3);
 }
@@ -839,6 +849,9 @@ video {
 .bg-\[\#014F4D\]\/90 {
   background-color: rgb(1 79 77 / 0.9);
 }
+.bg-\[\#015E5C\]\/30 {
+  background-color: rgb(1 94 92 / 0.3);
+}
 .bg-\[\#015E5C\]\/60 {
   background-color: rgb(1 94 92 / 0.6);
 }
@@ -885,6 +898,10 @@ video {
 }
 .bg-red-600\/10 {
   background-color: rgb(220 38 38 / 0.1);
+}
+.bg-red-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(153 27 27 / var(--tw-bg-opacity, 1));
 }
 .bg-teal-600 {
   --tw-bg-opacity: 1;
@@ -1309,6 +1326,9 @@ video {
 .hover\:bg-\[\#015E5C\]\/30:hover {
   background-color: rgb(1 94 92 / 0.3);
 }
+.hover\:bg-\[\#015E5C\]\/40:hover {
+  background-color: rgb(1 94 92 / 0.4);
+}
 .hover\:bg-\[\#019C95\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(1 156 149 / var(--tw-bg-opacity, 1));
@@ -1343,6 +1363,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(185 28 28 / var(--tw-bg-opacity, 1));
 }
+.hover\:bg-red-900:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(127 29 29 / var(--tw-bg-opacity, 1));
+}
 .hover\:bg-teal-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(15 118 110 / var(--tw-bg-opacity, 1));
@@ -1359,6 +1383,14 @@ video {
 .focus\:border-\[\#00B5A3\]:focus {
   --tw-border-opacity: 1;
   border-color: rgb(0 181 163 / var(--tw-border-opacity, 1));
+}
+.focus\:border-\[\#00B5AD\]:focus {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 181 173 / var(--tw-border-opacity, 1));
+}
+.focus\:outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 .focus\:ring-2:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
@@ -1394,6 +1426,10 @@ video {
 
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

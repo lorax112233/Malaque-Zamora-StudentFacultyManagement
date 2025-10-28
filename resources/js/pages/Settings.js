@@ -1,30 +1,129 @@
-import React, { useState } from "react";
-import { Plus, Edit2, Archive, RotateCcw } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Plus, Edit2, Archive, RotateCcw, X } from "lucide-react";
+import axios from "../axios";
 
 const tabs = ["Courses", "Departments", "Academic Years"];
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState("Courses");
+  const [activeTab, setActiveTab] = useState("Departments");
   const [showArchived, setShowArchived] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [courses, setCourses] = useState({});
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogMode, setDialogMode] = useState("add"); // "add" or "edit"
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [newItemName, setNewItemName] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [error, setError] = useState("");
 
-  const data = {
-    Courses: [
-      { id: 1, name: "BSCS", status: "Active" },
-      { id: 2, name: "BSIT", status: "Active" },
-      { id: 3, name: "BSECE", status: "Archived" },
-    ],
-    Departments: [
-      { id: 1, name: "Computer Science", status: "Active" },
-      { id: 2, name: "Information Technology", status: "Active" },
-      { id: 3, name: "Engineering", status: "Archived" },
-    ],
-    "Academic Years": [
-      { id: 1, name: "2023–2024", status: "Active" },
-      { id: 2, name: "2022–2023", status: "Archived" },
-    ],
+  useEffect(() => {
+    loadDepartments();
+  }, []);
+
+  const loadDepartments = async () => {
+    try {
+      const response = await axios.get('/api/departments');
+      setDepartments(response.data);
+      // Load courses for each department
+      response.data.forEach(dept => loadCourses(dept));
+    } catch (error) {
+      console.error('Failed to load departments:', error);
+    }
   };
 
-  const filteredData = data[activeTab].filter(
+  const loadCourses = async (department) => {
+    try {
+      const response = await axios.get(`/api/departments/${department}/courses`);
+      setCourses(prev => ({ ...prev, [department]: response.data }));
+    } catch (error) {
+      console.error('Failed to load courses:', error);
+    }
+  };
+
+  const handleAdd = () => {
+    setDialogMode("add");
+    setNewItemName("");
+    setSelectedItem(null);
+    setShowDialog(true);
+  };
+
+  const handleEdit = (item) => {
+    setDialogMode("edit");
+    setNewItemName(item.name);
+    setSelectedItem(item);
+    if (activeTab === "Courses") {
+      setSelectedDepartment(item.department);
+    }
+    setShowDialog(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      if (activeTab === "Departments") {
+        if (dialogMode === "add") {
+          await axios.post('/api/departments', { name: newItemName });
+        } else {
+          await axios.put(`/api/departments/${selectedItem.name}`, { name: newItemName });
+        }
+        loadDepartments();
+      } else if (activeTab === "Courses") {
+        if (dialogMode === "add") {
+          await axios.post(`/api/departments/${selectedDepartment}/courses`, { name: newItemName });
+        } else {
+          await axios.put(`/api/departments/${selectedDepartment}/courses/${selectedItem.name}`, { name: newItemName });
+        }
+        loadCourses(selectedDepartment);
+      }
+      setShowDialog(false);
+    } catch (error) {
+      setError(error.response?.data?.message || "An error occurred");
+    }
+  };
+
+  const handleDelete = async (item) => {
+    try {
+      if (activeTab === "Departments") {
+        await axios.delete(`/api/departments/${item.name}`);
+        loadDepartments();
+      } else if (activeTab === "Courses") {
+        await axios.delete(`/api/departments/${selectedDepartment}/courses/${item.name}`);
+        loadCourses(selectedDepartment);
+      }
+    } catch (error) {
+      console.error('Failed to delete:', error);
+    }
+  };
+
+  // Transform API data into the format expected by the table
+  const getTableData = () => {
+    if (activeTab === "Departments") {
+      return departments.map((dept, index) => ({
+        id: index + 1,
+        name: dept,
+        status: "Active"
+      }));
+    } else if (activeTab === "Courses") {
+      const allCourses = [];
+      let id = 1;
+      Object.entries(courses).forEach(([dept, courseList]) => {
+        courseList.forEach(course => {
+          allCourses.push({
+            id: id++,
+            name: course,
+            department: dept,
+            status: "Active"
+          });
+        });
+      });
+      return allCourses;
+    }
+    return [];
+  };
+
+  const filteredData = getTableData().filter(
     (item) => (showArchived ? item.status === "Archived" : item.status === "Active")
   );
 
@@ -157,6 +256,79 @@ export default function Settings() {
           </div>
         </div>
       </div>
+
+      {/* Add/Edit Dialog */}
+      {showDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-[#013836] p-6 rounded-2xl shadow-xl border border-[#015E5C] w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-[#A7F3D0]">
+                {dialogMode === "add" ? "Add" : "Edit"} {activeTab.slice(0, -1)}
+              </h3>
+              <button
+                onClick={() => setShowDialog(false)}
+                className="p-2 hover:bg-[#015E5C]/40 rounded-lg transition"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              {activeTab === "Courses" && (
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-2">
+                    Department
+                  </label>
+                  <select
+                    value={selectedDepartment}
+                    onChange={(e) => setSelectedDepartment(e.target.value)}
+                    className="w-full bg-[#014F4D] border border-[#015E5C] rounded-lg p-2 focus:outline-none focus:border-[#00B5AD]"
+                    required
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map((dept) => (
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Name</label>
+                <input
+                  type="text"
+                  value={newItemName}
+                  onChange={(e) => setNewItemName(e.target.value)}
+                  className="w-full bg-[#014F4D] border border-[#015E5C] rounded-lg p-2 focus:outline-none focus:border-[#00B5AD]"
+                  required
+                />
+              </div>
+
+              {error && (
+                <div className="mb-4 text-[#F87171] text-sm">{error}</div>
+              )}
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowDialog(false)}
+                  className="px-4 py-2 rounded-lg border border-[#015E5C] hover:bg-[#015E5C]/40 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-lg bg-[#00B5AD] hover:bg-[#019C95] transition"
+                >
+                  {dialogMode === "add" ? "Add" : "Save"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

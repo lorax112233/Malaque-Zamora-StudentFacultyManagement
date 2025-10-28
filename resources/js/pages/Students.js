@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../axios";
+import { DEPARTMENTS, COURSES } from "../constants/programs";
 
 export default function Students() {
   const [students, setStudents] = useState([]);
@@ -10,13 +11,32 @@ export default function Students() {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({ name: "", course: "", department: "" });
+  const [errors, setErrors] = useState({});
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    archived: 0,
+    byDepartment: [],
+    byCourse: []
+  });
 
   const fetchStudents = async () => {
     try {
       const response = await axios.get("/api/students", {
-        params: { search, course: courseFilter, department: deptFilter, status: view },
+        params: { 
+          search, 
+          course: courseFilter, 
+          department: deptFilter, 
+          status: view,
+          page,
+          per_page: 10
+        },
       });
-      setStudents(response.data);
+      setStudents(response.data.students.data);
+      setTotalPages(Math.ceil(response.data.students.total / 10));
+      setStats(response.data.stats);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
@@ -24,7 +44,7 @@ export default function Students() {
 
   useEffect(() => {
     fetchStudents();
-  }, [search, courseFilter, deptFilter, view]);
+  }, [search, courseFilter, deptFilter, view, page]);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const triggerDashboardUpdate = () => window.dispatchEvent(new Event("data-updated"));
@@ -37,10 +57,16 @@ export default function Students() {
       setShowModal(false);
       setEditing(null);
       setFormData({ name: "", course: "", department: "" });
+      setErrors({});
       fetchStudents();
       triggerDashboardUpdate();
     } catch (error) {
       console.error("Error saving student:", error);
+      if (error.response && error.response.data) {
+        setErrors(error.response.data.errors || { general: error.response.data.message });
+      } else {
+        setErrors({ general: "An unexpected error occurred while saving." });
+      }
     }
   };
 
@@ -68,6 +94,18 @@ export default function Students() {
     }
   };
 
+  const handlePermanentDelete = async (id) => {
+    if (confirm("Permanently delete this student? This action cannot be undone.")) {
+      try {
+        await axios.delete(`/api/students/${id}/force`);
+        fetchStudents();
+        triggerDashboardUpdate();
+      } catch (error) {
+        console.error("Error permanently deleting student:", error);
+      }
+    }
+  };
+
   const handleEdit = (student) => {
     setEditing(student);
     setFormData({ name: student.name, course: student.course, department: student.department });
@@ -91,6 +129,53 @@ export default function Students() {
           >
             + Add Student
           </button>
+        </div>
+
+        {/* Statistics */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+          {[
+            { label: "Total Students", value: stats.total, color: "#00B5AD" },
+            { label: "Active Students", value: stats.active, color: "#10B981" },
+            { label: "Archived Students", value: stats.archived, color: "#EF4444" },
+          ].map((stat, i) => (
+            <div key={i} className="p-6 rounded-xl bg-[#013836]/80 border border-[#015E5C]/40">
+              <h3 className="text-lg text-[#A7F3D0]">{stat.label}</h3>
+              <p className="text-3xl font-bold" style={{ color: stat.color }}>{stat.value || 0}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Distribution Charts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Department Distribution */}
+          {stats.byDepartment && stats.byDepartment.length > 0 && (
+            <div className="bg-[#013836]/80 rounded-xl p-6 border border-[#015E5C]/40">
+              <h3 className="text-xl font-semibold text-[#A7F3D0] mb-4">Department Distribution</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {stats.byDepartment.map((dept, i) => (
+                  <div key={i} className="p-4 rounded-lg bg-[#015E5C]/30">
+                    <p className="text-sm text-[#A7F3D0]">{dept.department}</p>
+                    <p className="text-2xl font-bold">{dept.count}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Course Distribution */}
+          {stats.byCourse && stats.byCourse.length > 0 && (
+            <div className="bg-[#013836]/80 rounded-xl p-6 border border-[#015E5C]/40">
+              <h3 className="text-xl font-semibold text-[#A7F3D0] mb-4">Course Distribution</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {stats.byCourse.map((course, i) => (
+                  <div key={i} className="p-4 rounded-lg bg-[#015E5C]/30">
+                    <p className="text-sm text-[#A7F3D0]">{course.course}</p>
+                    <p className="text-2xl font-bold">{course.count}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tabs */}
@@ -123,24 +208,27 @@ export default function Students() {
             className="p-3 rounded-lg bg-[#015E5C]/60 text-white flex-1 focus:ring-2 focus:ring-[#00B5AD] placeholder-gray-300"
           />
           <select
+            value={deptFilter}
+            onChange={(e) => {
+              setDeptFilter(e.target.value);
+              setCourseFilter(""); // Reset course when department changes
+            }}
+            className="p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD]"
+          >
+            <option value="">All Departments</option>
+            {DEPARTMENTS.map((dept) => (
+              <option key={dept} value={dept}>{dept}</option>
+            ))}
+          </select>
+          <select
             value={courseFilter}
             onChange={(e) => setCourseFilter(e.target.value)}
             className="p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD]"
           >
             <option value="">All Courses</option>
-            <option value="BSCS">BSCS</option>
-            <option value="BSIT">BSIT</option>
-            <option value="BSECE">BSECE</option>
-          </select>
-          <select
-            value={deptFilter}
-            onChange={(e) => setDeptFilter(e.target.value)}
-            className="p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD]"
-          >
-            <option value="">All Departments</option>
-            <option value="Computer Science">Computer Science</option>
-            <option value="Information Technology">Information Technology</option>
-            <option value="Engineering">Engineering</option>
+            {deptFilter && COURSES[deptFilter]?.map((course) => (
+              <option key={course} value={course}>{course}</option>
+            ))}
           </select>
         </div>
 
@@ -181,12 +269,20 @@ export default function Students() {
                           </button>
                         </>
                       ) : (
-                        <button
-                          onClick={() => handleRestore(s.id)}
-                          className="bg-green-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-green-700 transition"
-                        >
-                          Restore
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleRestore(s.id)}
+                            className="bg-green-600 px-4 py-2 rounded-lg font-semibold text-white hover:bg-green-700 transition"
+                          >
+                            Restore
+                          </button>
+                          <button
+                            onClick={() => handlePermanentDelete(s.id)}
+                            className="bg-red-800 px-4 py-2 rounded-lg font-semibold text-white hover:bg-red-900 transition"
+                          >
+                            Delete Permanently
+                          </button>
+                        </>
                       )}
                     </td>
                   </tr>
@@ -201,6 +297,29 @@ export default function Students() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-6 flex justify-center gap-2">
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="px-4 py-2 rounded-lg bg-[#013836] border border-[#015E5C]/40 disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 text-[#A7F3D0]">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="px-4 py-2 rounded-lg bg-[#013836] border border-[#015E5C]/40 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
 
         {/* Modal */}
         {showModal && (
@@ -218,22 +337,37 @@ export default function Students() {
                 onChange={handleChange}
                 className="w-full mb-4 p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD] placeholder-gray-300"
               />
-              <input
-                type="text"
+              {errors.name && <p className="text-sm text-red-400 mb-2">{errors.name[0]}</p>}
+              <select
+                name="department"
+                value={formData.department}
+                onChange={(e) => {
+                  handleChange(e);
+                  // Reset course when department changes
+                  setFormData(prev => ({ ...prev, course: "" }));
+                }}
+                className="w-full mb-4 p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD]"
+              >
+                <option value="">Select Department</option>
+                {DEPARTMENTS.map((dept) => (
+                  <option key={dept} value={dept}>{dept}</option>
+                ))}
+              </select>
+              {errors.department && <p className="text-sm text-red-400 mb-2">{errors.department[0]}</p>}
+              <select
                 name="course"
-                placeholder="Course"
                 value={formData.course}
                 onChange={handleChange}
-                className="w-full mb-4 p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD] placeholder-gray-300"
-              />
-              <input
-                type="text"
-                name="department"
-                placeholder="Department"
-                value={formData.department}
-                onChange={handleChange}
-                className="w-full mb-6 p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD] placeholder-gray-300"
-              />
+                className="w-full mb-6 p-3 rounded-lg bg-[#015E5C]/60 text-white focus:ring-2 focus:ring-[#00B5AD]"
+                disabled={!formData.department}
+              >
+                <option value="">Select Course</option>
+                {formData.department && COURSES[formData.department]?.map((course) => (
+                  <option key={course} value={course}>{course}</option>
+                ))}
+              </select>
+              {errors.course && <p className="text-sm text-red-400 mb-2">{errors.course[0]}</p>}
+              {errors.general && <p className="text-sm text-red-400 mb-2">{errors.general}</p>}
 
               <div className="flex justify-end gap-3">
                 <button

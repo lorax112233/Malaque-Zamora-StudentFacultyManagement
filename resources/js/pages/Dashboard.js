@@ -4,6 +4,7 @@ import "chart.js/auto";
 import axios from "../axios";
 
 export default function Dashboard() {
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     students: 0,
     faculty: 0,
@@ -14,10 +15,11 @@ export default function Dashboard() {
   const [facultyChartData, setFacultyChartData] = useState({ labels: [], datasets: [] });
 
   const fetchStats = async () => {
+    setLoading(true);
     try {
       // Counts
       const studentRes = await axios.get("/api/students/count");
-      const facultyRes = await axios.get("/api/faculties/count"); // FIX: plural
+      const facultyRes = await axios.get("/api/faculties/count");
       const deptRes = await axios.get("/api/departments/count");
 
       setStats({
@@ -63,6 +65,8 @@ export default function Dashboard() {
       });
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,6 +86,14 @@ export default function Dashboard() {
       y: { ticks: { color: "#A7F3D0" }, grid: { color: "#015E5C33" } },
     },
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#01302E] via-[#014F4D] to-[#012726] text-[#E9F9F8] px-6 py-10 flex items-center justify-center">
+        <div className="text-2xl font-semibold text-[#A7F3D0]">Loading dashboard data...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#01302E] via-[#014F4D] to-[#012726] text-[#E9F9F8] px-6 py-10">

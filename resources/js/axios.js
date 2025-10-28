@@ -5,7 +5,10 @@ const instance = axios.create({
   headers: {
     "X-Requested-With": "XMLHttpRequest",
     "Content-Type": "application/json",
+    "Accept": "application/json",
   },
+  // include credentials in case the API uses cookie-based auth (Sanctum)
+  withCredentials: true,
 });
 
 export default instance; // ✅ Make sure this line exists
