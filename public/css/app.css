@@ -105,7 +105,7 @@
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }/*
-! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.18 | MIT License | https://tailwindcss.com
 *//*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
@@ -560,6 +560,9 @@ video {
 .mt-2 {
   margin-top: 0.5rem;
 }
+.mt-4 {
+  margin-top: 1rem;
+}
 .mt-6 {
   margin-top: 1.5rem;
 }
@@ -614,9 +617,6 @@ video {
 .w-64 {
   width: 16rem;
 }
-.w-96 {
-  width: 24rem;
-}
 .w-\[450px\] {
   width: 450px;
 }
@@ -640,6 +640,9 @@ video {
 }
 .max-w-7xl {
   max-width: 80rem;
+}
+.max-w-md {
+  max-width: 28rem;
 }
 .max-w-sm {
   max-width: 24rem;
@@ -666,6 +669,9 @@ video {
 }
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .flex-col {
   flex-direction: column;
@@ -699,6 +705,14 @@ video {
 }
 .gap-6 {
   gap: 1.5rem;
+}
+.gap-8 {
+  gap: 2rem;
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
@@ -960,9 +974,6 @@ video {
 .p-4 {
   padding: 1rem;
 }
-.p-5 {
-  padding: 1.25rem;
-}
 .p-6 {
   padding: 1.5rem;
 }
@@ -1059,6 +1070,9 @@ video {
 .font-bold {
   font-weight: 700;
 }
+.font-extrabold {
+  font-weight: 800;
+}
 .font-medium {
   font-weight: 500;
 }
@@ -1133,10 +1147,6 @@ video {
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity, 1));
-}
-.text-gray-600 {
-  --tw-text-opacity: 1;
-  color: rgb(75 85 99 / var(--tw-text-opacity, 1));
 }
 .text-primary {
   --tw-text-opacity: 1;
@@ -1271,9 +1281,6 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.duration-150 {
-  transition-duration: 150ms;
-}
 .duration-200 {
   transition-duration: 200ms;
 }
@@ -1282,11 +1289,6 @@ video {
 }
 .hover\:-translate-y-0\.5:hover {
   --tw-translate-y: -0.125rem;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.hover\:scale-\[1\.02\]:hover {
-  --tw-scale-x: 1.02;
-  --tw-scale-y: 1.02;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .hover\:bg-\[\#004D40\]:hover {
@@ -1305,6 +1307,9 @@ video {
 }
 .hover\:bg-\[\#014542\]\/60:hover {
   background-color: rgb(1 69 66 / 0.6);
+}
+.hover\:bg-\[\#015E5C\]\/20:hover {
+  background-color: rgb(1 94 92 / 0.2);
 }
 .hover\:bg-\[\#015E5C\]\/30:hover {
   background-color: rgb(1 94 92 / 0.3);

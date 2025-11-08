@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
-import "chart.js/auto";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { motion } from "framer-motion";
 import axios from "../axios";
 
 export default function Dashboard() {
@@ -9,16 +18,26 @@ export default function Dashboard() {
     faculty: 0,
     departments: 0,
   });
+  const [studentChartData, setStudentChartData] = useState([]);
+  const [facultyChartData, setFacultyChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [studentChartData, setStudentChartData] = useState({ labels: [], datasets: [] });
-  const [facultyChartData, setFacultyChartData] = useState({ labels: [], datasets: [] });
-
+  // Fetch dashboard stats and chart data
   const fetchStats = async () => {
     try {
-      // Counts
-      const studentRes = await axios.get("/api/students/count");
-      const facultyRes = await axios.get("/api/faculties/count"); // FIX: plural
-      const deptRes = await axios.get("/api/departments/count");
+      const [
+        studentRes,
+        facultyRes,
+        deptRes,
+        studentChartRes,
+        facultyChartRes,
+      ] = await Promise.all([
+        axios.get("/students/count"),
+        axios.get("/faculties/count"),
+        axios.get("/departments/count"),
+        axios.get("/students/by-department"),
+        axios.get("/faculties/by-department"),
+      ]);
 
       setStats({
         students: studentRes.data.count ?? 0,
@@ -26,108 +45,122 @@ export default function Dashboard() {
         departments: deptRes.data.count ?? 0,
       });
 
-      // Students per department
-      const studentChartRes = await axios.get("/api/students/by-department");
-      const studentArray = studentChartRes.data.data || studentChartRes.data;
-
-      setStudentChartData({
-        labels: studentArray.map((d) => d.department),
-        datasets: [
-          {
-            label: "Students per Department",
-            data: studentArray.map((d) => d.count),
-            backgroundColor: "#00B5AD99",
-            borderColor: "#00B5AD",
-            borderWidth: 2,
-            borderRadius: 8,
-          },
-        ],
-      });
-
-      // Faculty per department
-      const facultyChartRes = await axios.get("/api/faculties/by-department");
-      const facultyArray = facultyChartRes.data.data || facultyChartRes.data;
-
-      setFacultyChartData({
-        labels: facultyArray.map((d) => d.department),
-        datasets: [
-          {
-            label: "Faculty per Department",
-            data: facultyArray.map((d) => d.count),
-            backgroundColor: "#34D39999",
-            borderColor: "#34D399",
-            borderWidth: 2,
-            borderRadius: 8,
-          },
-        ],
-      });
+      setStudentChartData(studentChartRes.data.data || studentChartRes.data || []);
+      setFacultyChartData(facultyChartRes.data.data || facultyChartRes.data || []);
     } catch (error) {
-      console.error("Failed to fetch dashboard data:", error);
+      console.error("Failed to fetch dashboard data:", error.response || error);
+
+      // Fallback data to prevent blank page
+      setStats({ students: 0, faculty: 0, departments: 0 });
+      setStudentChartData([]);
+      setFacultyChartData([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchStats();
-
-    const handleDataUpdated = () => fetchStats();
-    window.addEventListener("data-updated", handleDataUpdated);
-    return () => window.removeEventListener("data-updated", handleDataUpdated);
   }, []);
 
-  const chartOptions = {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { ticks: { color: "#A7F3D0" }, grid: { color: "#015E5C33" } },
-      y: { ticks: { color: "#A7F3D0" }, grid: { color: "#015E5C33" } },
-    },
-  };
+  // Stat card component
+  const StatCard = ({ label, value, color }) => (
+    <motion.div
+      className="p-6 rounded-2xl shadow-lg bg-[#013836]/80 backdrop-blur-md border border-[#015E5C]/40"
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 200 }}
+    >
+      <h2 className="text-3xl font-extrabold mb-2" style={{ color }}>
+        {loading ? "..." : value ?? 0}
+      </h2>
+      <p className="text-gray-300">{label}</p>
+    </motion.div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#01302E] via-[#014F4D] to-[#012726] text-[#E9F9F8] px-6 py-10">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-10 text-[#A7F3D0] drop-shadow-md">Dashboard</h1>
+        <motion.h1
+          className="text-4xl font-bold mb-10 text-[#A7F3D0]"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Dashboard Overview
+        </motion.h1>
 
-        {/* Stats Cards */}
+        {/* Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-          {[
-            { label: "Total Students", value: stats.students, color: "#00B5AD" },
-            { label: "Total Faculty", value: stats.faculty, color: "#34D399" },
-            { label: "Departments", value: stats.departments, color: "#2DD4BF" },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className="p-6 rounded-2xl shadow-lg bg-[#013836]/80 backdrop-blur-md border border-[#015E5C]/40 hover:scale-[1.02] transition transform"
-            >
-              <h2 className="text-2xl font-bold mb-2" style={{ color: stat.color }}>
-                {stat.value}
-              </h2>
-              <p className="text-lg text-gray-300">{stat.label}</p>
-            </div>
-          ))}
+          <StatCard label="Total Students" value={stats.students} color="#00B5AD" />
+          <StatCard label="Total Faculty" value={stats.faculty} color="#34D399" />
+          <StatCard label="Departments" value={stats.departments} color="#2DD4BF" />
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Students Chart */}
-          <div className="bg-[#013836]/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-[#015E5C]/40">
-            <h2 className="text-2xl font-bold text-[#A7F3D0] mb-6">Students per Department</h2>
-            {studentChartData.labels.length > 0 ? (
-              <Bar data={studentChartData} options={chartOptions} />
+          <motion.div
+            className="bg-[#013836]/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-[#015E5C]/40"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h2 className="text-2xl font-semibold text-[#A7F3D0] mb-6">
+              Students per Department
+            </h2>
+            {studentChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={studentChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#015E5C55" />
+                  <XAxis dataKey="department" stroke="#A7F3D0" />
+                  <YAxis stroke="#A7F3D0" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#013836",
+                      border: "1px solid #015E5C",
+                      color: "#E9F9F8",
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="count" fill="#00B5AD" radius={[10, 10, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             ) : (
-              <p className="text-gray-400">No data available.</p>
+              <p className="text-gray-400 text-center">No student data available.</p>
             )}
-          </div>
+          </motion.div>
 
           {/* Faculty Chart */}
-          <div className="bg-[#013836]/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-[#015E5C]/40">
-            <h2 className="text-2xl font-bold text-[#A7F3D0] mb-6">Faculty per Department</h2>
-            {facultyChartData.labels.length > 0 ? (
-              <Bar data={facultyChartData} options={chartOptions} />
+          <motion.div
+            className="bg-[#013836]/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-[#015E5C]/40"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="text-2xl font-semibold text-[#A7F3D0] mb-6">
+              Faculty per Department
+            </h2>
+            {facultyChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={facultyChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#015E5C55" />
+                  <XAxis dataKey="department" stroke="#A7F3D0" />
+                  <YAxis stroke="#A7F3D0" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#013836",
+                      border: "1px solid #015E5C",
+                      color: "#E9F9F8",
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="count" fill="#34D399" radius={[10, 10, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             ) : (
-              <p className="text-gray-400">No data available.</p>
+              <p className="text-gray-400 text-center">No faculty data available.</p>
             )}
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

@@ -7,36 +7,36 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, password }),
+    });
 
-      if (!res.ok) {
-        if (res.status === 401) setError("Invalid email or password");
-        else setError("Login failed. Please try again.");
-        return;
-      }
+    const data = await res.json();
 
-      const data = await res.json();
-
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href = "/";
-      } else {
-        setError(data.error || "Login failed");
-      }
-    } catch (err) {
-      console.error("Network error:", err);
-      setError("Network error. Check your server connection.");
+    if (!res.ok) {
+      setError(data.message || "Invalid credentials");
+      return;
     }
-  };
+
+    // ✅ Save token and user to localStorage
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    // ✅ Redirect to dashboard
+    window.location.href = "/";
+  } catch (err) {
+    console.error("Network error:", err);
+    setError("Network error. Check your backend connection.");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#001F1E] relative overflow-hidden">

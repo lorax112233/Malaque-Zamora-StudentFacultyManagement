@@ -11,7 +11,6 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
-import StatCard from "./components/StatCard";
 
 ReactDOM.render(
   <Router>
