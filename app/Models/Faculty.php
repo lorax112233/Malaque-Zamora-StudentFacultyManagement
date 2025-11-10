@@ -11,13 +11,10 @@ class Faculty extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'department',
-        'status',
-        'department_id',
+        'f_name','m_name','l_name','suffix','date_of_birth','sex',
+        'phone_number','email_address','address','position','status','department_id'
     ];
 
-    // Relationships
     public function department()
     {
         return $this->belongsTo(Department::class);

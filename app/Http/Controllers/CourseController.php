@@ -7,74 +7,64 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    // ✅ List courses (active/archived)
     public function index(Request $request)
     {
+        $view = $request->query('view', 'active');
         $query = Course::with('department');
 
-        if ($request->status === 'archived') {
-            $query->onlyTrashed();
-        } else {
-            $query->whereNull('deleted_at');
+        if ($view === 'archived') {
+            $query = $query->onlyTrashed();
         }
 
-        if ($request->search) {
-            $query->where('course_name', 'like', "%{$request->search}%");
-        }
-
-        if ($request->department_id) {
-            $query->where('department_id', $request->department_id);
-        }
-
-        return response()->json($query->orderBy('id', 'desc')->get());
+        return response()->json($query->get());
     }
 
-    // ✅ Create new course
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'course_name' => 'required|string|max:255',
-            'department_id' => 'required|integer|exists:departments,id',
+            'course_name' => 'required|string|unique:courses,course_name',
+            'department_id' => 'required|exists:departments,id'
         ]);
 
         $course = Course::create($validated);
         return response()->json($course, 201);
     }
 
-    // ✅ Update course
+    public function show($id)
+    {
+        return response()->json(Course::with('department')->findOrFail($id));
+    }
+
     public function update(Request $request, $id)
     {
-        $course = Course::withTrashed()->findOrFail($id);
-
+        $course = Course::findOrFail($id);
         $validated = $request->validate([
-            'course_name' => 'required|string|max:255',
-            'department_id' => 'required|integer|exists:departments,id',
+            'course_name' => 'sometimes|required|string|unique:courses,course_name,' . $course->id,
+            'department_id' => 'sometimes|required|exists:departments,id'
         ]);
 
         $course->update($validated);
         return response()->json($course);
     }
 
-    // ✅ Archive course
     public function destroy($id)
     {
         $course = Course::findOrFail($id);
         $course->delete();
-        return response()->json(['message' => 'Course archived successfully']);
+        return response()->json(['message' => 'Course archived']);
     }
 
-    // ✅ Restore archived course
     public function restore($id)
     {
         $course = Course::onlyTrashed()->findOrFail($id);
         $course->restore();
-        return response()->json(['message' => 'Course restored successfully']);
+        return response()->json(['message' => 'Course restored']);
     }
 
-    // ✅ Count active courses
-    public function count()
+    public function forceDelete($id)
     {
-        $count = Course::whereNull('deleted_at')->count();
-        return response()->json(['count' => $count]);
+        $course = Course::withTrashed()->findOrFail($id);
+        $course->forceDelete();
+        return response()->json(['message' => 'Course permanently deleted']);
     }
 }

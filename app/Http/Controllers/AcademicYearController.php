@@ -7,64 +7,72 @@ use Illuminate\Http\Request;
 
 class AcademicYearController extends Controller
 {
-    // ✅ List all academic years
     public function index(Request $request)
     {
+        $view = $request->query('view', 'active');
         $query = AcademicYear::query();
 
-        if ($request->status === 'archived') {
-            $query->onlyTrashed();
-        } else {
-            $query->whereNull('deleted_at');
+        if ($view === 'archived') {
+            $query = $query->onlyTrashed();
         }
 
-        return response()->json($query->orderBy('id', 'desc')->get());
+        return response()->json($query->orderBy('start_date', 'desc')->get());
     }
 
-    // ✅ Create academic year
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'school_year' => 'required|string|max:20',
+            'school_year' => 'required|string|unique:academic_years,school_year',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'is_active' => 'boolean',
         ]);
 
-        $academicYear = AcademicYear::create($validated);
-        return response()->json($academicYear, 201);
+        if (!empty($validated['is_active'])) {
+            AcademicYear::where('is_active', true)->update(['is_active' => false]);
+        }
+
+        $year = AcademicYear::create($validated);
+        return response()->json($year, 201);
     }
 
-    // ✅ Update academic year
     public function update(Request $request, $id)
     {
-        $academicYear = AcademicYear::withTrashed()->findOrFail($id);
+        $year = AcademicYear::withTrashed()->findOrFail($id);
 
         $validated = $request->validate([
-            'school_year' => 'required|string|max:20',
+            'school_year' => 'required|string|unique:academic_years,school_year,' . $year->id,
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'is_active' => 'boolean',
         ]);
 
-        $academicYear->update($validated);
-        return response()->json($academicYear);
+        if (!empty($validated['is_active'])) {
+            AcademicYear::where('is_active', true)->update(['is_active' => false]);
+        }
+
+        $year->update($validated);
+        return response()->json($year);
     }
 
-    // ✅ Archive
     public function destroy($id)
     {
-        $academicYear = AcademicYear::findOrFail($id);
-        $academicYear->delete();
-        return response()->json(['message' => 'Academic year archived successfully']);
+        $year = AcademicYear::findOrFail($id);
+        $year->delete();
+        return response()->json(['message' => 'Academic year archived']);
     }
 
-    // ✅ Restore
     public function restore($id)
     {
-        $academicYear = AcademicYear::onlyTrashed()->findOrFail($id);
-        $academicYear->restore();
-        return response()->json(['message' => 'Academic year restored successfully']);
+        $year = AcademicYear::onlyTrashed()->findOrFail($id);
+        $year->restore();
+        return response()->json(['message' => 'Academic year restored']);
     }
 
-    // ✅ Count
-    public function count()
+    public function forceDelete($id)
     {
-        $count = AcademicYear::whereNull('deleted_at')->count();
-        return response()->json(['count' => $count]);
+        $year = AcademicYear::withTrashed()->findOrFail($id);
+        $year->forceDelete();
+        return response()->json(['message' => 'Academic year permanently deleted']);
     }
 }

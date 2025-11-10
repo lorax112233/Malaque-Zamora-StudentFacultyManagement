@@ -7,70 +7,64 @@ use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
-    // ✅ List all departments (active or archived)
     public function index(Request $request)
     {
-        $query = Department::query();
+        $view = $request->query('view', 'active');
+        $query = Department::with('head:id,f_name,l_name');
 
-        if ($request->status === 'archived') {
-            $query->onlyTrashed();
-        } else {
-            $query->whereNull('deleted_at');
+        if ($view === 'archived') {
+            $query = $query->onlyTrashed();
         }
 
-        if ($request->search) {
-            $query->where('name', 'like', "%{$request->search}%");
-        }
-
-        return response()->json($query->orderBy('id', 'desc')->get());
+        return response()->json($query->get());
     }
 
-    // ✅ Create new department
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'department_head_id' => 'nullable|integer|exists:faculties,id',
+            'department_name' => 'required|string|unique:departments,department_name',
+            'department_head_id' => 'nullable|exists:faculties,id'
         ]);
 
         $department = Department::create($validated);
         return response()->json($department, 201);
     }
 
-    // ✅ Update department info
+    public function show($id)
+    {
+        return response()->json(Department::with('head')->findOrFail($id));
+    }
+
     public function update(Request $request, $id)
     {
-        $department = Department::withTrashed()->findOrFail($id);
-
+        $department = Department::findOrFail($id);
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'department_head_id' => 'nullable|integer|exists:faculties,id',
+            'department_name' => 'sometimes|required|string|unique:departments,department_name,' . $department->id,
+            'department_head_id' => 'nullable|exists:faculties,id'
         ]);
 
         $department->update($validated);
         return response()->json($department);
     }
 
-    // ✅ Archive (soft delete)
     public function destroy($id)
     {
         $department = Department::findOrFail($id);
         $department->delete();
-        return response()->json(['message' => 'Department archived successfully']);
+        return response()->json(['message' => 'Department archived']);
     }
 
-    // ✅ Restore archived department
     public function restore($id)
     {
         $department = Department::onlyTrashed()->findOrFail($id);
         $department->restore();
-        return response()->json(['message' => 'Department restored successfully']);
+        return response()->json(['message' => 'Department restored']);
     }
 
-    // ✅ Count active departments
-    public function count()
+    public function forceDelete($id)
     {
-        $count = Department::whereNull('deleted_at')->count();
-        return response()->json(['count' => $count]);
+        $department = Department::withTrashed()->findOrFail($id);
+        $department->forceDelete();
+        return response()->json(['message' => 'Department permanently deleted']);
     }
 }

@@ -31,7 +31,6 @@ class DashboardController extends Controller
                 'department' => $d->department_name,
                 'count' => $d->students_count,
             ]);
-
         return response()->json($data);
     }
 
@@ -43,7 +42,6 @@ class DashboardController extends Controller
                 'department' => $d->department_name,
                 'count' => $d->faculties_count,
             ]);
-
         return response()->json($data);
     }
 }

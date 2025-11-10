@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import api from "../axios"; // your axios.js file
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -7,50 +7,43 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
 
-  try {
-    const res = await fetch("http://127.0.0.1:8000/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      // 1️⃣ First, get CSRF cookie
+      await api.get("/sanctum/csrf-cookie");
 
-    const data = await res.json();
+      // 2️⃣ Then, login
+      const res = await api.post("/api/login", { email, password });
 
-    if (!res.ok) {
-      setError(data.message || "Invalid credentials");
-      return;
+      // 3️⃣ Save token & user
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      // 4️⃣ Redirect
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Login error:", err.response || err);
+      setError(
+        err.response?.data?.message ||
+        "Network error or invalid credentials"
+      );
     }
-
-    // ✅ Save token and user to localStorage
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-
-    // ✅ Redirect to dashboard
-    window.location.href = "/";
-  } catch (err) {
-    console.error("Network error:", err);
-    setError("Network error. Check your backend connection.");
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#001F1E] relative overflow-hidden">
-      {/* Background gradient layers */}
+      {/* Background gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#002B2B] via-[#001F1E] to-[#003F3C] opacity-95"></div>
       <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-[#00B5AD] blur-[180px] opacity-20 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-[450px] h-[450px] bg-[#028A7E] blur-[160px] opacity-10 animate-pulse"></div>
 
-      {/* Login Box */}
+      {/* Login box */}
       <div className="relative w-[900px] h-[480px] bg-[#012D2C]/60 backdrop-blur-lg rounded-3xl shadow-[0_0_40px_-10px_rgba(0,181,163,0.35)] flex overflow-hidden border border-[#014F4D]/40 z-10">
-        {/* Left Section - Logo */}
+        {/* Left section */}
         <div className="w-1/2 flex flex-col items-center justify-center border-r border-[#00B5A3]/20 bg-[#002624]/40 backdrop-blur-sm">
           <div className="flex flex-col items-center space-y-5">
-            {/* Logo Icon */}
             <div className="bg-white p-4 rounded-2xl shadow-[0_0_30px_rgba(0,181,163,0.3)]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -67,26 +60,16 @@ export default function Login() {
                 />
               </svg>
             </div>
-
-            {/* Branding Text */}
-            <h1 className="text-3xl font-bold text-[#5EF2D0] tracking-wide">
-              ACADEMIC
-            </h1>
-            <p className="text-sm text-[#A9C7C4] uppercase tracking-[4px] font-medium">
-              Admin Portal
-            </p>
+            <h1 className="text-3xl font-bold text-[#5EF2D0] tracking-wide">ACADEMIC</h1>
+            <p className="text-sm text-[#A9C7C4] uppercase tracking-[4px] font-medium">Admin Portal</p>
           </div>
         </div>
 
-        {/* Right Section - Form */}
+        {/* Right section */}
         <div className="w-1/2 flex flex-col justify-center items-center px-10 text-white space-y-6">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-[#5EF2D0] tracking-wide">
-              Welcome Back
-            </h2>
-            <p className="text-sm text-[#A9C7C4]/90">
-              Sign in to access your dashboard
-            </p>
+            <h2 className="text-2xl font-bold text-[#5EF2D0] tracking-wide">Welcome Back</h2>
+            <p className="text-sm text-[#A9C7C4]/90">Sign in to access your dashboard</p>
           </div>
 
           <form onSubmit={handleLogin} className="w-full flex flex-col space-y-4">
@@ -97,7 +80,6 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-[#001F1E]/80 text-gray-100 placeholder-gray-400 border border-[#014F4D] focus:border-[#00B5A3] focus:ring-2 focus:ring-[#00B5A3]/30 outline-none transition duration-200"
             />
-
             <input
               type="password"
               placeholder="Password"
@@ -105,7 +87,6 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-[#001F1E]/80 text-gray-100 placeholder-gray-400 border border-[#014F4D] focus:border-[#00B5A3] focus:ring-2 focus:ring-[#00B5A3]/30 outline-none transition duration-200"
             />
-
             <button
               type="submit"
               className="bg-[#00B5A3] hover:bg-[#029E90] w-full py-3 rounded-lg text-white font-semibold shadow-md hover:shadow-[0_0_20px_rgba(0,181,163,0.4)] transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95"

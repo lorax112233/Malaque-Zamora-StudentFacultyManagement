@@ -10,7 +10,7 @@ import {
   Legend,
 } from "recharts";
 import { motion } from "framer-motion";
-import axios from "../axios";
+import api from "../axios"; // your axios instance
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -32,25 +32,34 @@ export default function Dashboard() {
         studentChartRes,
         facultyChartRes,
       ] = await Promise.all([
-        axios.get("/students/count"),
-        axios.get("/faculties/count"),
-        axios.get("/departments/count"),
-        axios.get("/students/by-department"),
-        axios.get("/faculties/by-department"),
+        api.get("/dashboard/students/count"),
+        api.get("/dashboard/faculties/count"),
+        api.get("/dashboard/departments/count"),
+        api.get("/dashboard/students/by-department"),
+        api.get("/dashboard/faculties/by-department"),
       ]);
 
       setStats({
-        students: studentRes.data.count ?? 0,
-        faculty: facultyRes.data.count ?? 0,
-        departments: deptRes.data.count ?? 0,
+        students: studentRes?.data?.count || 0,
+        faculty: facultyRes?.data?.count || 0,
+        departments: deptRes?.data?.count || 0,
       });
 
-      setStudentChartData(studentChartRes.data.data || studentChartRes.data || []);
-      setFacultyChartData(facultyChartRes.data.data || facultyChartRes.data || []);
-    } catch (error) {
-      console.error("Failed to fetch dashboard data:", error.response || error);
+      setStudentChartData(
+        (studentChartRes?.data || []).map((item) => ({
+          department: item.department || "Unknown",
+          count: item.count || 0,
+        }))
+      );
 
-      // Fallback data to prevent blank page
+      setFacultyChartData(
+        (facultyChartRes?.data || []).map((item) => ({
+          department: item.department || "Unknown",
+          count: item.count || 0,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
       setStats({ students: 0, faculty: 0, departments: 0 });
       setStudentChartData([]);
       setFacultyChartData([]);
@@ -63,7 +72,7 @@ export default function Dashboard() {
     fetchStats();
   }, []);
 
-  // Stat card component
+  // Card component for stats
   const StatCard = ({ label, value, color }) => (
     <motion.div
       className="p-6 rounded-2xl shadow-lg bg-[#013836]/80 backdrop-blur-md border border-[#015E5C]/40"
@@ -71,7 +80,7 @@ export default function Dashboard() {
       transition={{ type: "spring", stiffness: 200 }}
     >
       <h2 className="text-3xl font-extrabold mb-2" style={{ color }}>
-        {loading ? "..." : value ?? 0}
+        {loading ? "..." : value}
       </h2>
       <p className="text-gray-300">{label}</p>
     </motion.div>
@@ -89,16 +98,13 @@ export default function Dashboard() {
           Dashboard Overview
         </motion.h1>
 
-        {/* Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
           <StatCard label="Total Students" value={stats.students} color="#00B5AD" />
           <StatCard label="Total Faculty" value={stats.faculty} color="#34D399" />
           <StatCard label="Departments" value={stats.departments} color="#2DD4BF" />
         </div>
 
-        {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Students Chart */}
           <motion.div
             className="bg-[#013836]/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-[#015E5C]/40"
             initial={{ opacity: 0, y: 30 }}
@@ -130,7 +136,6 @@ export default function Dashboard() {
             )}
           </motion.div>
 
-          {/* Faculty Chart */}
           <motion.div
             className="bg-[#013836]/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-[#015E5C]/40"
             initial={{ opacity: 0, y: 30 }}
