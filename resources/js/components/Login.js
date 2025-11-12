@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import api from "../axios"; // your axios.js file
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,10 +13,12 @@ export default function Login() {
 
     try {
       // 1️⃣ First, get CSRF cookie
-      await api.get("/sanctum/csrf-cookie");
+      // Request CSRF cookie from the site root (not under /api)
+      await axios.get(window.location.origin + "/sanctum/csrf-cookie", { withCredentials: true });
 
       // 2️⃣ Then, login
-      const res = await api.post("/api/login", { email, password });
+      // POST to /login on the API base (api baseURL already includes /api)
+      const res = await api.post("/login", { email, password });
 
       // 3️⃣ Save token & user
       localStorage.setItem("token", res.data.token);

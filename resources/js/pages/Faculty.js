@@ -14,9 +14,17 @@ export default function Faculty() {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({
-    f_name: "", m_name: "", l_name: "", suffix: "",
-    date_of_birth: "", sex: "Male", phone_number: "",
-    email_address: "", address: "", position: "", status: "Active",
+    f_name: "",
+    m_name: "",
+    l_name: "",
+    suffix: "",
+    date_of_birth: "",
+    sex: "Male",
+    phone_number: "",
+    email_address: "",
+    address: "",
+    position: "",
+    status: "Active",
     department_id: ""
   });
 
@@ -41,7 +49,6 @@ export default function Faculty() {
       const res = await api.get("/faculties", {
         params: { search, department_id: deptFilter }
       });
-      // filter client-side based on view
       const filtered = res.data.filter(f =>
         view === "active" ? !f.deleted_at : f.deleted_at
       );
@@ -63,10 +70,19 @@ export default function Faculty() {
   }, []);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
   const resetForm = () => setFormData({
-    f_name: "", m_name: "", l_name: "", suffix: "",
-    date_of_birth: "", sex: "Male", phone_number: "",
-    email_address: "", address: "", position: "", status: "Active",
+    f_name: "",
+    m_name: "",
+    l_name: "",
+    suffix: "",
+    date_of_birth: "",
+    sex: "Male",
+    phone_number: "",
+    email_address: "",
+    address: "",
+    position: "",
+    status: "Active",
     department_id: ""
   });
 
@@ -78,6 +94,7 @@ export default function Faculty() {
     try {
       if (editing) await api.put(`/faculties/${editing.id}`, formData);
       else await api.post("/faculties", formData);
+
       setShowModal(false);
       setEditing(null);
       resetForm();
@@ -91,17 +108,18 @@ export default function Faculty() {
     }
   };
 
-  // Archive / Restore / Delete
   const archiveFaculty = async (id) => {
     if (!confirm("Archive this faculty?")) return;
     try { await api.patch(`/faculties/${id}/archive`); fetchFaculties(); } 
     catch (err) { console.error(err); alert("Failed to archive faculty"); }
   };
+
   const restoreFaculty = async (id) => {
     if (!confirm("Restore this faculty?")) return;
     try { await api.patch(`/faculties/${id}/restore`); fetchFaculties(); } 
     catch (err) { console.error(err); alert("Failed to restore faculty"); }
   };
+
   const deleteFaculty = async (id) => {
     if (!confirm("Permanently delete this faculty?")) return;
     try { await api.delete(`/faculties/${id}`); fetchFaculties(); } 
@@ -183,184 +201,59 @@ export default function Faculty() {
         </div>
 
         {/* Modal */}
-        {/* Modal */}
-              <AnimatePresence>
-                {showModal && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                  >
-                    <motion.div
-                      initial={{ y: 10, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 10, opacity: 0 }}
-                      className="bg-[#013836] w-full max-w-md p-6 rounded-2xl shadow-xl border border-[#015E5C]/50"
-                    >
-                      <h3 className="text-xl font-bold text-[#A7F3D0] mb-4">
-                        {editing ? "Edit Student" : "Add Student"}
-                      </h3>
-                      <div className="space-y-2">
-                        {/* Name Fields */}
-                        <div className="grid grid-cols-2 gap-2">
-                          <input
-                            name="f_name"
-                            value={formData.f_name}
-                            onChange={handleChange}
-                            placeholder="First name"
-                            className="p-2 rounded bg-[#015E5C]/60 text-white"
-                          />
-                          <input
-                            name="m_name"
-                            value={formData.m_name}
-                            onChange={handleChange}
-                            placeholder="Middle name"
-                            className="p-2 rounded bg-[#015E5C]/60 text-white"
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <input
-                            name="l_name"
-                            value={formData.l_name}
-                            onChange={handleChange}
-                            placeholder="Last name"
-                            className="p-2 rounded bg-[#015E5C]/60 text-white"
-                          />
-                          <input
-                            name="suffix"
-                            value={formData.suffix}
-                            onChange={handleChange}
-                            placeholder="Suffix"
-                            className="p-2 rounded bg-[#015E5C]/60 text-white"
-                          />
-                        </div>
-
-                        {/* Contact & DOB */}
-                        <input
-                          name="email_address"
-                          value={formData.email_address}
-                          onChange={handleChange}
-                          placeholder="Email"
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        />
-                        <input
-                          type="date"
-                          name="date_of_birth"
-                          value={formData.date_of_birth}
-                          onChange={handleChange}
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        />
-                        <select
-                          name="sex"
-                          value={formData.sex}
-                          onChange={handleChange}
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        >
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                        </select>
-
-                        <input
-                          name="phone_number"
-                          value={formData.phone_number}
-                          onChange={handleChange}
-                          placeholder="Phone"
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        />
-                        <input
-                          name="address"
-                          value={formData.address}
-                          onChange={handleChange}
-                          placeholder="Address"
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        />
-
-                        {/* Department & Course */}
-                        <select
-                          name="department_id"
-                          value={formData.department_id}
-                          onChange={handleChange}
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        >
-                          <option value="">Select Department</option>
-                          {departments.map(d => (
-                            <option key={d.id} value={d.id}>
-                              {d.department_name || d.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          name="course_id"
-                          value={formData.course_id}
-                          onChange={handleChange}
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        >
-                          <option value="">Select Course</option>
-                          {courses.map(c => (
-                            <option key={c.id} value={c.id}>
-                              {c.course_name || c.name}
-                            </option>
-                          ))}
-                        </select>
-
-                        {/* Academic Year */}
-                        <select
-                          name="academic_year_id"
-                          value={formData.academic_year_id}
-                          onChange={handleChange}
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        >
-                          <option value="">Select Academic Year</option>
-                          {academicYears.map(a => (
-                            <option key={a.id} value={a.id}>
-                              {a.year || a.school_year}
-                            </option>
-                          ))}
-                        </select>
-
-                        {/* Year Level as Text Input */}
-                        <input
-                          name="year_level"
-                          value={formData.year_level}
-                          onChange={handleChange}
-                          placeholder="Year Level"
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        />
-
-                        {/* Status */}
-                        <select
-                          name="status"
-                          value={formData.status}
-                          onChange={handleChange}
-                          className="p-2 rounded bg-[#015E5C]/60 text-white w-full"
-                        >
-                          <option value="Active">Active</option>
-                          <option value="Inactive">Inactive</option>
-                        </select>
-                      </div>
-
-                      {/* Buttons */}
-                      <div className="mt-4 flex justify-end gap-2">
-                        <button
-                          onClick={() => setShowModal(false)}
-                          className="px-4 py-2 bg-gray-500 rounded text-white hover:bg-gray-600"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleSave}
-                          className="px-4 py-2 bg-teal-600 rounded text-white hover:bg-teal-700"
-                        >
-                          {editing ? "Update" : "Save"}
-                        </button>
-                      </div>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-                    </div>
+        <AnimatePresence>
+          {showModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            >
+              <motion.div
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 10, opacity: 0 }}
+                className="bg-[#013836] w-full max-w-md p-6 rounded-2xl shadow-xl border border-[#015E5C]/50"
+              >
+                <h3 className="text-xl font-bold text-[#A7F3D0] mb-4">
+                  {editing ? "Edit Faculty" : "Add Faculty"}
+                </h3>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <input name="f_name" value={formData.f_name} onChange={handleChange} placeholder="First name" className="p-2 rounded bg-[#015E5C]/60 text-white" />
+                    <input name="m_name" value={formData.m_name} onChange={handleChange} placeholder="Middle name" className="p-2 rounded bg-[#015E5C]/60 text-white" />
                   </div>
-                );
-              }
+                  <div className="grid grid-cols-2 gap-2">
+                    <input name="l_name" value={formData.l_name} onChange={handleChange} placeholder="Last name" className="p-2 rounded bg-[#015E5C]/60 text-white" />
+                    <input name="suffix" value={formData.suffix} onChange={handleChange} placeholder="Suffix" className="p-2 rounded bg-[#015E5C]/60 text-white" />
+                  </div>
+                  <input name="email_address" value={formData.email_address} onChange={handleChange} placeholder="Email" className="p-2 rounded bg-[#015E5C]/60 text-white w-full" />
+                  <input type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} className="p-2 rounded bg-[#015E5C]/60 text-white w-full" />
+                  <select name="sex" value={formData.sex} onChange={handleChange} className="p-2 rounded bg-[#015E5C]/60 text-white w-full">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                  <input name="phone_number" value={formData.phone_number} onChange={handleChange} placeholder="Phone" className="p-2 rounded bg-[#015E5C]/60 text-white w-full" />
+                  <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="p-2 rounded bg-[#015E5C]/60 text-white w-full" />
+                  <select name="department_id" value={formData.department_id} onChange={handleChange} className="p-2 rounded bg-[#015E5C]/60 text-white w-full">
+                    <option value="">Select Department</option>
+                    {departments.map(d => <option key={d.id} value={d.id}>{d.department_name || d.name}</option>)}
+                  </select>
+                  <input name="position" value={formData.position} onChange={handleChange} placeholder="Position" className="p-2 rounded bg-[#015E5C]/60 text-white w-full" />
+                  <select name="status" value={formData.status} onChange={handleChange} className="p-2 rounded bg-[#015E5C]/60 text-white w-full">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+                <div className="mt-4 flex justify-end gap-2">
+                  <button onClick={() => setShowModal(false)} className="px-4 py-2 bg-gray-500 rounded text-white hover:bg-gray-600">Cancel</button>
+                  <button onClick={handleSave} className="px-4 py-2 bg-teal-600 rounded text-white hover:bg-teal-700">{editing ? "Update" : "Save"}</button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}

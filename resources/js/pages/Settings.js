@@ -85,6 +85,18 @@ export default function Settings() {
           is_active: formData.is_active !== undefined ? !!formData.is_active : undefined,
         };
 
+          // Sanitize payload: convert empty strings to null and coerce id fields to numbers
+          Object.keys(payload).forEach((k) => {
+            if (payload[k] === "") payload[k] = null;
+            if (k.endsWith("_id") || k === "department_id" || k === "department_head_id") {
+              if (payload[k] !== null && payload[k] !== undefined && payload[k] !== "") {
+                // try to coerce to number
+                const n = Number(payload[k]);
+                payload[k] = Number.isNaN(n) ? payload[k] : n;
+              }
+            }
+          });
+
         // map frontend types to backend routes
         const routeType = type === "year" ? "academic-years" : `${type}s`;
 
@@ -100,7 +112,12 @@ export default function Settings() {
       fetchData();
     } catch (err) {
       console.error("Save error:", err.response?.data || err);
-      alert("Failed to save. Check console for details.");
+      // Show backend validation messages if present
+      const message =
+        err.response?.data?.message ||
+        (err.response?.data?.errors && Object.values(err.response.data.errors).flat().join(" ")) ||
+        "Failed to save. Check console for details.";
+      alert(message);
     }
   };
   

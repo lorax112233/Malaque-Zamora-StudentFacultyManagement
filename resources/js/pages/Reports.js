@@ -12,12 +12,16 @@ export default function Reports() {
   // Fetch courses & departments for filters
   useEffect(() => {
     const fetchFilters = async () => {
-      const [courseRes, deptRes] = await Promise.all([
-        api.get("/courses"),
-        api.get("/departments"),
-      ]);
-      setCourses(courseRes.data);
-      setDepartments(deptRes.data);
+      try {
+        const [courseRes, deptRes] = await Promise.all([
+          api.get("/courses"),
+          api.get("/departments"),
+        ]);
+        setCourses(courseRes.data);
+        setDepartments(deptRes.data);
+      } catch (err) {
+        console.error(err);
+      }
     };
     fetchFilters();
   }, []);
@@ -37,17 +41,19 @@ export default function Reports() {
     }
   };
 
-  // Export CSV
   const handleExportCSV = () => {
     if (!data.length) return;
-    const csvHeader = type === "students" 
-      ? ["ID","Name","Email","Course","Department"] 
-      : ["ID","Name","Email","Department"];
+
+    const csvHeader = type === "students"
+      ? ["ID","Name","Email","Course","Department","Academic Year","Year Level","Status"]
+      : ["ID","Name","Email","Department","Position","Status"];
+
     const csvRows = data.map((item) =>
       type === "students"
-        ? [item.id, `${item.f_name} ${item.l_name}`, item.email_address, item.course?.course_name || "", item.department?.department_name || ""].join(",")
-        : [item.id, `${item.f_name} ${item.l_name}`, item.email_address, item.department?.department_name || ""].join(",")
+        ? [item.id, `${item.f_name} ${item.l_name}`, item.email_address, item.course?.course_name||"", item.department?.department_name||"", item.academic_year?.school_year||"", item.year_level||"", item.status||""].join(",")
+        : [item.id, `${item.f_name} ${item.l_name}`, item.email_address, item.department?.department_name||"", item.position||"", item.status||""].join(",")
     );
+
     const csvContent = [csvHeader.join(","), ...csvRows].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -109,7 +115,12 @@ export default function Reports() {
               <tr>
                 <th className="p-4 font-semibold">ID</th>
                 <th className="p-4 font-semibold">Name</th>
-                <th className="p-4 font-semibold">{type === "students" ? "Course" : "Department"}</th>
+                <th className="p-4 font-semibold">Email</th>
+                {type === "students" && <th className="p-4 font-semibold">Course</th>}
+                <th className="p-4 font-semibold">Department</th>
+                {type === "students" && <th className="p-4 font-semibold">Academic Year</th>}
+                {type === "students" && <th className="p-4 font-semibold">Year Level</th>}
+                <th className="p-4 font-semibold">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -117,11 +128,16 @@ export default function Reports() {
                 <tr key={item.id} className="border-b border-[#015E5C]/30 hover:bg-[#015E5C]/20 transition">
                   <td className="p-4">{item.id}</td>
                   <td className="p-4">{item.f_name} {item.l_name}</td>
-                  <td className="p-4">{type === "students" ? item.course?.course_name || "—" : item.department?.department_name || "—"}</td>
+                  <td className="p-4">{item.email_address || "—"}</td>
+                  {type === "students" && <td className="p-4">{item.course?.course_name || "—"}</td>}
+                  <td className="p-4">{item.department?.department_name || "—"}</td>
+                  {type === "students" && <td className="p-4">{item.academic_year?.school_year || "—"}</td>}
+                  {type === "students" && <td className="p-4">{item.year_level || "—"}</td>}
+                  <td className="p-4">{item.status || "—"}</td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="3" className="text-center p-6 text-[#A7F3D0] italic">
+                  <td colSpan={type === "students" ? 8 : 5} className="text-center p-6 text-[#A7F3D0] italic">
                     No {type} report data found.
                   </td>
                 </tr>

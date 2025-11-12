@@ -86281,7 +86281,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../axios */ "./resources/js/axios.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -86294,6 +86296,7 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
  // your axios.js file
+
 
 function Login() {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
@@ -86318,10 +86321,12 @@ function Login() {
             setError("");
             _context.p = 1;
             _context.n = 2;
-            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].get("/sanctum/csrf-cookie");
+            return axios__WEBPACK_IMPORTED_MODULE_2___default().get(window.location.origin + "/sanctum/csrf-cookie", {
+              withCredentials: true
+            });
           case 2:
             _context.n = 3;
-            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/login", {
+            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("/login", {
               email: email,
               password: password
             });
@@ -86349,58 +86354,58 @@ function Login() {
       return _ref.apply(this, arguments);
     };
   }();
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     className: "min-h-screen flex items-center justify-center bg-[#001F1E] relative overflow-hidden",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "absolute inset-0 bg-gradient-to-br from-[#002B2B] via-[#001F1E] to-[#003F3C] opacity-95"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "absolute -top-32 -left-32 w-[500px] h-[500px] bg-[#00B5AD] blur-[180px] opacity-20 animate-pulse"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "absolute bottom-0 right-0 w-[450px] h-[450px] bg-[#028A7E] blur-[160px] opacity-10 animate-pulse"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "relative w-[900px] h-[480px] bg-[#012D2C]/60 backdrop-blur-lg rounded-3xl shadow-[0_0_40px_-10px_rgba(0,181,163,0.35)] flex overflow-hidden border border-[#014F4D]/40 z-10",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "w-1/2 flex flex-col items-center justify-center border-r border-[#00B5A3]/20 bg-[#002624]/40 backdrop-blur-sm",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "flex flex-col items-center space-y-5",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
             className: "bg-white p-4 rounded-2xl shadow-[0_0_30px_rgba(0,181,163,0.3)]",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
               xmlns: "http://www.w3.org/2000/svg",
               className: "h-16 w-16 text-[#00B5AD]",
               fill: "none",
               viewBox: "0 0 24 24",
               stroke: "currentColor",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
                 strokeLinecap: "round",
                 strokeLinejoin: "round",
                 strokeWidth: 2,
                 d: "M12 14l9-5-9-5-9 5 9 5zm0 0v6m0-6l9-5m-9 5l-9-5"
               })
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
             className: "text-3xl font-bold text-[#5EF2D0] tracking-wide",
             children: "ACADEMIC"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
             className: "text-sm text-[#A9C7C4] uppercase tracking-[4px] font-medium",
             children: "Admin Portal"
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "w-1/2 flex flex-col justify-center items-center px-10 text-white space-y-6",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "text-center",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
             className: "text-2xl font-bold text-[#5EF2D0] tracking-wide",
             children: "Welcome Back"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
             className: "text-sm text-[#A9C7C4]/90",
             children: "Sign in to access your dashboard"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
           onSubmit: handleLogin,
           className: "w-full flex flex-col space-y-4",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
             type: "email",
             placeholder: "Email",
             value: email,
@@ -86408,7 +86413,7 @@ function Login() {
               return setEmail(e.target.value);
             },
             className: "w-full px-4 py-3 rounded-lg bg-[#001F1E]/80 text-gray-100 placeholder-gray-400 border border-[#014F4D] focus:border-[#00B5A3] focus:ring-2 focus:ring-[#00B5A3]/30 outline-none transition duration-200"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
             type: "password",
             placeholder: "Password",
             value: password,
@@ -86416,15 +86421,15 @@ function Login() {
               return setPassword(e.target.value);
             },
             className: "w-full px-4 py-3 rounded-lg bg-[#001F1E]/80 text-gray-100 placeholder-gray-400 border border-[#014F4D] focus:border-[#00B5A3] focus:ring-2 focus:ring-[#00B5A3]/30 outline-none transition duration-200"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
             type: "submit",
             className: "bg-[#00B5A3] hover:bg-[#029E90] w-full py-3 rounded-lg text-white font-semibold shadow-md hover:shadow-[0_0_20px_rgba(0,181,163,0.4)] transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95",
             children: "Login"
-          }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
             className: "text-red-400 text-center mt-2 text-sm bg-red-600/10 border border-red-600/40 px-3 py-2 rounded-md",
             children: error
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("p", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
           className: "text-xs text-[#A9C7C4]/70 pt-4",
           children: ["\xA9 ", new Date().getFullYear(), " Academic Admin Portal"]
         })]
@@ -86906,7 +86911,6 @@ function Faculty() {
             });
           case 2:
             res = _context2.v;
-            // filter client-side based on view
             filtered = res.data.filter(function (f) {
               return view === "active" ? !f.deleted_at : f.deleted_at;
             });
@@ -87013,8 +87017,6 @@ function Faculty() {
       return _ref3.apply(this, arguments);
     };
   }();
-
-  // Archive / Restore / Delete
   var archiveFaculty = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(id) {
       var _t4;
@@ -87304,7 +87306,7 @@ function Faculty() {
             className: "bg-[#013836] w-full max-w-md p-6 rounded-2xl shadow-xl border border-[#015E5C]/50",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
               className: "text-xl font-bold text-[#A7F3D0] mb-4",
-              children: editing ? "Edit Student" : "Add Student"
+              children: editing ? "Edit Faculty" : "Add Faculty"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
               className: "space-y-2",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
@@ -87387,39 +87389,11 @@ function Faculty() {
                     children: d.department_name || d.name
                   }, d.id);
                 })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
-                name: "course_id",
-                value: formData.course_id,
-                onChange: handleChange,
-                className: "p-2 rounded bg-[#015E5C]/60 text-white w-full",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                  value: "",
-                  children: "Select Course"
-                }), courses.map(function (c) {
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                    value: c.id,
-                    children: c.course_name || c.name
-                  }, c.id);
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
-                name: "academic_year_id",
-                value: formData.academic_year_id,
-                onChange: handleChange,
-                className: "p-2 rounded bg-[#015E5C]/60 text-white w-full",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                  value: "",
-                  children: "Select Academic Year"
-                }), academicYears.map(function (a) {
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-                    value: a.id,
-                    children: a.year || a.school_year
-                  }, a.id);
-                })]
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
-                name: "year_level",
-                value: formData.year_level,
+                name: "position",
+                value: formData.position,
                 onChange: handleChange,
-                placeholder: "Year Level",
+                placeholder: "Position",
                 className: "p-2 rounded bg-[#015E5C]/60 text-white w-full"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
                 name: "status",
@@ -87470,7 +87444,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../axios */ "./resources/js/axios.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! framer-motion */ "./node_modules/framer-motion/dist/es/render/dom/motion.mjs");
+/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! framer-motion */ "./node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -87484,96 +87466,387 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
+
 function Profile() {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
     _useState2 = _slicedToArray(_useState, 2),
-    user = _useState2[0],
-    setUser = _useState2[1];
+    profile = _useState2[0],
+    setProfile = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    showModal = _useState4[0],
+    setShowModal = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    showPasswordModal = _useState6[0],
+    setShowPasswordModal = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+    _useState8 = _slicedToArray(_useState7, 2),
+    formData = _useState8[0],
+    setFormData = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      current_password: "",
+      new_password: "",
+      new_password_confirmation: ""
+    }),
+    _useState0 = _slicedToArray(_useState9, 2),
+    passwordData = _useState0[0],
+    setPasswordData = _useState0[1];
 
-  // Fetch current user
-  var fetchUser = /*#__PURE__*/function () {
+  // Fetch admin profile
+  var fetchProfile = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var res, _t;
+      var t, res, _err$response, _t;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
-            _context.p = 0;
-            _context.n = 1;
-            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].get("/me");
+            // if no token, go to login
+            t = localStorage.getItem("token");
+            if (t) {
+              _context.n = 1;
+              break;
+            }
+            window.location.href = "/login";
+            return _context.a(2);
           case 1:
-            res = _context.v;
-            // Your backend /me endpoint
-            setUser(res.data);
-            _context.n = 3;
-            break;
+            _context.p = 1;
+            _context.n = 2;
+            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].get("/me");
           case 2:
-            _context.p = 2;
-            _t = _context.v;
-            console.error(_t);
-            alert("Failed to fetch user info. Are you logged in?");
+            res = _context.v;
+            setProfile(res.data);
+            _context.n = 5;
+            break;
           case 3:
+            _context.p = 3;
+            _t = _context.v;
+            console.error("Fetch profile error:", _t.response || _t);
+            // If unauthorized, clear session and redirect to login
+            if (!(_t.response && (_t.response.status === 401 || _t.response.status === 419))) {
+              _context.n = 4;
+              break;
+            }
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+            return _context.a(2);
+          case 4:
+            alert(((_err$response = _t.response) === null || _err$response === void 0 || (_err$response = _err$response.data) === null || _err$response === void 0 ? void 0 : _err$response.message) || "Failed to fetch profile. Check console for details.");
+          case 5:
             return _context.a(2);
         }
-      }, _callee, null, [[0, 2]]);
+      }, _callee, null, [[1, 3]]);
     }));
-    return function fetchUser() {
+    return function fetchProfile() {
       return _ref.apply(this, arguments);
     };
   }();
-
-  // Logout
-  var handleLogout = /*#__PURE__*/function () {
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchProfile();
+  }, []);
+  var handleChange = function handleChange(e) {
+    return setFormData(_objectSpread(_objectSpread({}, formData), {}, _defineProperty({}, e.target.name, e.target.value)));
+  };
+  var handlePasswordChange = function handlePasswordChange(e) {
+    return setPasswordData(_objectSpread(_objectSpread({}, passwordData), {}, _defineProperty({}, e.target.name, e.target.value)));
+  };
+  var handleSaveProfile = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var _t2;
+      var _ref3, _formData$name, _formData$email, payload, res, stored, updated, _err$response2, _t2;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
             _context2.p = 0;
+            payload = {
+              name: (_ref3 = (_formData$name = formData.name) !== null && _formData$name !== void 0 ? _formData$name : formData.username) !== null && _ref3 !== void 0 ? _ref3 : profile.name,
+              email: (_formData$email = formData.email) !== null && _formData$email !== void 0 ? _formData$email : profile.email
+            };
             _context2.n = 1;
-            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("/logout");
+            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].put("/me", payload);
           case 1:
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "/login"; // redirect to login
+            res = _context2.v;
+            // update local state and localStorage user
+            setProfile(res.data.user || res.data);
+            try {
+              stored = JSON.parse(localStorage.getItem("user") || "null");
+              if (stored) {
+                updated = _objectSpread(_objectSpread({}, stored), {}, {
+                  name: payload.name,
+                  email: payload.email
+                });
+                localStorage.setItem("user", JSON.stringify(updated));
+              }
+            } catch (e) {}
+            setShowModal(false);
+            alert(res.data.message || "Profile updated successfully");
             _context2.n = 3;
             break;
           case 2:
             _context2.p = 2;
             _t2 = _context2.v;
-            console.error(_t2);
-            alert("Logout failed.");
+            console.error("Update profile error:", _t2.response || _t2);
+            alert(((_err$response2 = _t2.response) === null || _err$response2 === void 0 || (_err$response2 = _err$response2.data) === null || _err$response2 === void 0 ? void 0 : _err$response2.message) || "Failed to update profile. Check console for details.");
           case 3:
             return _context2.a(2);
         }
       }, _callee2, null, [[0, 2]]);
     }));
-    return function handleLogout() {
+    return function handleSaveProfile() {
       return _ref2.apply(this, arguments);
     };
   }();
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    fetchUser();
-  }, []);
-  if (!user) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-    className: "text-center mt-20 text-white",
-    children: "Loading..."
+  var handleSavePassword = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var res, _err$response3, _t3;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            if (!(passwordData.new_password !== passwordData.new_password_confirmation)) {
+              _context3.n = 1;
+              break;
+            }
+            alert("Passwords do not match!");
+            return _context3.a(2);
+          case 1:
+            _context3.p = 1;
+            _context3.n = 2;
+            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].put("/me/password", {
+              current_password: passwordData.current_password,
+              new_password: passwordData.new_password,
+              new_password_confirmation: passwordData.new_password_confirmation
+            });
+          case 2:
+            res = _context3.v;
+            setShowPasswordModal(false);
+            setPasswordData({
+              current_password: "",
+              new_password: "",
+              new_password_confirmation: ""
+            });
+            alert(res.data.message || "Password updated successfully!");
+            _context3.n = 4;
+            break;
+          case 3:
+            _context3.p = 3;
+            _t3 = _context3.v;
+            console.error("Update password error:", _t3.response || _t3);
+            alert(((_err$response3 = _t3.response) === null || _err$response3 === void 0 || (_err$response3 = _err$response3.data) === null || _err$response3 === void 0 ? void 0 : _err$response3.message) || "Failed to update password.");
+          case 4:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[1, 3]]);
+    }));
+    return function handleSavePassword() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  var handleLogout = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+      var _t4;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            _context4.p = 0;
+            _context4.n = 1;
+            return _axios__WEBPACK_IMPORTED_MODULE_1__["default"].post("/logout");
+          case 1:
+            _context4.n = 3;
+            break;
+          case 2:
+            _context4.p = 2;
+            _t4 = _context4.v;
+            // ignore errors but still clear local session
+            console.warn("Logout request error:", _t4.response || _t4);
+          case 3:
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+          case 4:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[0, 2]]);
+    }));
+    return function handleLogout() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+  if (!profile) return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+    className: "text-center mt-20 text-[#A7F3D0]",
+    children: "Loading profile..."
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    className: "min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
-      className: "text-3xl font-bold mb-4",
-      children: "My Profile"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("p", {
-      className: "mb-2",
-      children: ["Name: ", user.name]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("p", {
-      className: "mb-4",
-      children: ["Email: ", user.email]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-      onClick: handleLogout,
-      className: "px-6 py-2 bg-red-600 rounded hover:bg-red-700 transition",
-      children: "Logout"
-    })]
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+    className: "min-h-screen px-6 py-10 bg-gradient-to-b from-[#01302E] via-[#014F4D] to-[#012726] text-[#E9F9F8]",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+      className: "max-w-4xl mx-auto",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h1", {
+        className: "text-4xl font-bold text-[#A7F3D0] mb-10",
+        children: "My Profile"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        className: "bg-[#013836]/80 rounded-2xl p-8 shadow-lg border border-[#015E5C]/40",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+          className: "flex flex-col md:flex-row gap-8 items-center",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            className: "w-32 h-32 rounded-full bg-[#015E5C]/50 flex items-center justify-center text-3xl font-bold text-white",
+            children: (profile.name || "?").charAt(0).toUpperCase()
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "flex-1",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+              className: "text-xl font-semibold mb-2",
+              children: profile.name
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+              className: "text-gray-300 mb-2",
+              children: ["Email: ", profile.email]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "flex gap-4 mt-4 flex-wrap",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                onClick: function onClick() {
+                  setFormData({
+                    name: profile.name,
+                    email: profile.email
+                  });
+                  setShowModal(true);
+                },
+                className: "px-6 py-3 bg-[#00B5AD] rounded-xl text-white font-semibold hover:bg-[#019C95]",
+                children: "Edit Profile"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                onClick: function onClick() {
+                  return setShowPasswordModal(true);
+                },
+                className: "px-6 py-3 bg-[#FF9800] rounded-xl text-white font-semibold hover:bg-[#E68900]",
+                children: "Change Password"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                onClick: handleLogout,
+                className: "px-6 py-3 bg-red-600 rounded-xl text-white font-semibold hover:bg-red-700",
+                children: "Logout"
+              })]
+            })]
+          })]
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.AnimatePresence, {
+        children: showModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {
+          initial: {
+            opacity: 0
+          },
+          animate: {
+            opacity: 1
+          },
+          exit: {
+            opacity: 0
+          },
+          className: "fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {
+            initial: {
+              y: 10,
+              opacity: 0
+            },
+            animate: {
+              y: 0,
+              opacity: 1
+            },
+            exit: {
+              y: 10,
+              opacity: 0
+            },
+            className: "bg-[#013836] w-full max-w-md p-6 rounded-2xl shadow-xl border border-[#015E5C]/50",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+              className: "text-xl font-bold text-[#A7F3D0] mb-4",
+              children: "Edit Profile"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+              name: "name",
+              value: formData.name || "",
+              onChange: handleChange,
+              placeholder: "Name",
+              className: "p-3 rounded w-full bg-[#015E5C]/60 text-white mb-4"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+              name: "email",
+              value: formData.email || "",
+              onChange: handleChange,
+              placeholder: "Email",
+              className: "p-3 rounded w-full bg-[#015E5C]/60 text-white mb-4"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "flex justify-end gap-2",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                onClick: function onClick() {
+                  return setShowModal(false);
+                },
+                className: "px-4 py-2 bg-gray-500 rounded text-white hover:bg-gray-600",
+                children: "Cancel"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                onClick: handleSaveProfile,
+                className: "px-4 py-2 bg-teal-600 rounded text-white hover:bg-teal-700",
+                children: "Save"
+              })]
+            })]
+          })
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.AnimatePresence, {
+        children: showPasswordModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {
+          initial: {
+            opacity: 0
+          },
+          animate: {
+            opacity: 1
+          },
+          exit: {
+            opacity: 0
+          },
+          className: "fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {
+            initial: {
+              y: 10,
+              opacity: 0
+            },
+            animate: {
+              y: 0,
+              opacity: 1
+            },
+            exit: {
+              y: 10,
+              opacity: 0
+            },
+            className: "bg-[#013836] w-full max-w-md p-6 rounded-2xl shadow-xl border border-[#015E5C]/50",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
+              className: "text-xl font-bold text-[#A7F3D0] mb-4",
+              children: "Change Password"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+              type: "password",
+              name: "current_password",
+              value: passwordData.current_password,
+              onChange: handlePasswordChange,
+              placeholder: "Current Password",
+              className: "p-3 rounded w-full bg-[#015E5C]/60 text-white mb-4"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+              type: "password",
+              name: "new_password",
+              value: passwordData.new_password,
+              onChange: handlePasswordChange,
+              placeholder: "New Password",
+              className: "p-3 rounded w-full bg-[#015E5C]/60 text-white mb-4"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+              type: "password",
+              name: "new_password_confirmation",
+              value: passwordData.new_password_confirmation,
+              onChange: handlePasswordChange,
+              placeholder: "Confirm New Password",
+              className: "p-3 rounded w-full bg-[#015E5C]/60 text-white mb-4"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "flex justify-end gap-2",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                onClick: function onClick() {
+                  return setShowPasswordModal(false);
+                },
+                className: "px-4 py-2 bg-gray-500 rounded text-white hover:bg-gray-600",
+                children: "Cancel"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                onClick: handleSavePassword,
+                className: "px-4 py-2 bg-orange-600 rounded text-white hover:bg-orange-700",
+                children: "Save"
+              })]
+            })]
+          })
+        })
+      })]
+    })
   });
 }
 
@@ -87638,10 +87911,11 @@ function Reports() {
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchFilters = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-        var _yield$Promise$all, _yield$Promise$all2, courseRes, deptRes;
+        var _yield$Promise$all, _yield$Promise$all2, courseRes, deptRes, _t;
         return _regenerator().w(function (_context) {
-          while (1) switch (_context.n) {
+          while (1) switch (_context.p = _context.n) {
             case 0:
+              _context.p = 0;
               _context.n = 1;
               return Promise.all([_axios__WEBPACK_IMPORTED_MODULE_1__["default"].get("/courses"), _axios__WEBPACK_IMPORTED_MODULE_1__["default"].get("/departments")]);
             case 1:
@@ -87651,10 +87925,16 @@ function Reports() {
               deptRes = _yield$Promise$all2[1];
               setCourses(courseRes.data);
               setDepartments(deptRes.data);
+              _context.n = 3;
+              break;
             case 2:
+              _context.p = 2;
+              _t = _context.v;
+              console.error(_t);
+            case 3:
               return _context.a(2);
           }
-        }, _callee);
+        }, _callee, null, [[0, 2]]);
       }));
       return function fetchFilters() {
         return _ref.apply(this, arguments);
@@ -87664,7 +87944,7 @@ function Reports() {
   }, []);
   var fetchReport = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var res, _res, _t;
+      var res, _res, _t2;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
@@ -87699,8 +87979,8 @@ function Reports() {
             break;
           case 5:
             _context2.p = 5;
-            _t = _context2.v;
-            console.error(_t);
+            _t2 = _context2.v;
+            console.error(_t2);
             alert("Failed to fetch report.");
           case 6:
             return _context2.a(2);
@@ -87711,14 +87991,12 @@ function Reports() {
       return _ref2.apply(this, arguments);
     };
   }();
-
-  // Export CSV
   var handleExportCSV = function handleExportCSV() {
     if (!data.length) return;
-    var csvHeader = type === "students" ? ["ID", "Name", "Email", "Course", "Department"] : ["ID", "Name", "Email", "Department"];
+    var csvHeader = type === "students" ? ["ID", "Name", "Email", "Course", "Department", "Academic Year", "Year Level", "Status"] : ["ID", "Name", "Email", "Department", "Position", "Status"];
     var csvRows = data.map(function (item) {
-      var _item$course, _item$department, _item$department2;
-      return type === "students" ? [item.id, "".concat(item.f_name, " ").concat(item.l_name), item.email_address, ((_item$course = item.course) === null || _item$course === void 0 ? void 0 : _item$course.course_name) || "", ((_item$department = item.department) === null || _item$department === void 0 ? void 0 : _item$department.department_name) || ""].join(",") : [item.id, "".concat(item.f_name, " ").concat(item.l_name), item.email_address, ((_item$department2 = item.department) === null || _item$department2 === void 0 ? void 0 : _item$department2.department_name) || ""].join(",");
+      var _item$course, _item$department, _item$academic_year, _item$department2;
+      return type === "students" ? [item.id, "".concat(item.f_name, " ").concat(item.l_name), item.email_address, ((_item$course = item.course) === null || _item$course === void 0 ? void 0 : _item$course.course_name) || "", ((_item$department = item.department) === null || _item$department === void 0 ? void 0 : _item$department.department_name) || "", ((_item$academic_year = item.academic_year) === null || _item$academic_year === void 0 ? void 0 : _item$academic_year.school_year) || "", item.year_level || "", item.status || ""].join(",") : [item.id, "".concat(item.f_name, " ").concat(item.l_name), item.email_address, ((_item$department2 = item.department) === null || _item$department2 === void 0 ? void 0 : _item$department2.department_name) || "", item.position || "", item.status || ""].join(",");
     });
     var csvContent = [csvHeader.join(",")].concat(_toConsumableArray(csvRows)).join("\n");
     var blob = new Blob([csvContent], {
@@ -87808,12 +88086,27 @@ function Reports() {
                 children: "Name"
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
                 className: "p-4 font-semibold",
-                children: type === "students" ? "Course" : "Department"
+                children: "Email"
+              }), type === "students" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                className: "p-4 font-semibold",
+                children: "Course"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                className: "p-4 font-semibold",
+                children: "Department"
+              }), type === "students" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                className: "p-4 font-semibold",
+                children: "Academic Year"
+              }), type === "students" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                className: "p-4 font-semibold",
+                children: "Year Level"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                className: "p-4 font-semibold",
+                children: "Status"
               })]
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tbody", {
             children: data.length ? data.map(function (item) {
-              var _item$course2, _item$department3;
+              var _item$course2, _item$department3, _item$academic_year2;
               return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
                 className: "border-b border-[#015E5C]/30 hover:bg-[#015E5C]/20 transition",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
@@ -87824,12 +88117,27 @@ function Reports() {
                   children: [item.f_name, " ", item.l_name]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
                   className: "p-4",
-                  children: type === "students" ? ((_item$course2 = item.course) === null || _item$course2 === void 0 ? void 0 : _item$course2.course_name) || "—" : ((_item$department3 = item.department) === null || _item$department3 === void 0 ? void 0 : _item$department3.department_name) || "—"
+                  children: item.email_address || "—"
+                }), type === "students" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "p-4",
+                  children: ((_item$course2 = item.course) === null || _item$course2 === void 0 ? void 0 : _item$course2.course_name) || "—"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "p-4",
+                  children: ((_item$department3 = item.department) === null || _item$department3 === void 0 ? void 0 : _item$department3.department_name) || "—"
+                }), type === "students" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "p-4",
+                  children: ((_item$academic_year2 = item.academic_year) === null || _item$academic_year2 === void 0 ? void 0 : _item$academic_year2.school_year) || "—"
+                }), type === "students" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "p-4",
+                  children: item.year_level || "—"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "p-4",
+                  children: item.status || "—"
                 })]
               }, item.id);
             }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tr", {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("td", {
-                colSpan: "3",
+                colSpan: type === "students" ? 8 : 5,
                 className: "text-center p-6 text-[#A7F3D0] italic",
                 children: ["No ", type, " report data found."]
               })
@@ -88013,14 +88321,26 @@ function Settings() {
   };
   var handleSave = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var payload, routeType, _err$response2, _t2;
+      var payload, routeType, _err$response2, _err$response3, _err$response4, message, _t2;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
             _context2.p = 0;
             payload = _objectSpread(_objectSpread({}, formData), {}, {
               is_active: formData.is_active !== undefined ? !!formData.is_active : undefined
-            }); // map frontend types to backend routes
+            }); // Sanitize payload: convert empty strings to null and coerce id fields to numbers
+            Object.keys(payload).forEach(function (k) {
+              if (payload[k] === "") payload[k] = null;
+              if (k.endsWith("_id") || k === "department_id" || k === "department_head_id") {
+                if (payload[k] !== null && payload[k] !== undefined && payload[k] !== "") {
+                  // try to coerce to number
+                  var n = Number(payload[k]);
+                  payload[k] = Number.isNaN(n) ? payload[k] : n;
+                }
+              }
+            });
+
+            // map frontend types to backend routes
             routeType = type === "year" ? "academic-years" : "".concat(type, "s");
             if (!editing) {
               _context2.n = 2;
@@ -88045,7 +88365,9 @@ function Settings() {
             _context2.p = 4;
             _t2 = _context2.v;
             console.error("Save error:", ((_err$response2 = _t2.response) === null || _err$response2 === void 0 ? void 0 : _err$response2.data) || _t2);
-            alert("Failed to save. Check console for details.");
+            // Show backend validation messages if present
+            message = ((_err$response3 = _t2.response) === null || _err$response3 === void 0 || (_err$response3 = _err$response3.data) === null || _err$response3 === void 0 ? void 0 : _err$response3.message) || ((_err$response4 = _t2.response) === null || _err$response4 === void 0 || (_err$response4 = _err$response4.data) === null || _err$response4 === void 0 ? void 0 : _err$response4.errors) && Object.values(_t2.response.data.errors).flat().join(" ") || "Failed to save. Check console for details.";
+            alert(message);
           case 5:
             return _context2.a(2);
         }
@@ -88063,7 +88385,7 @@ function Settings() {
   // Archive an item
   var handleArchive = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(item) {
-      var _err$response3, _t3;
+      var _err$response5, _t3;
       return _regenerator().w(function (_context3) {
         while (1) switch (_context3.p = _context3.n) {
           case 0:
@@ -88083,7 +88405,7 @@ function Settings() {
           case 3:
             _context3.p = 3;
             _t3 = _context3.v;
-            console.error("Archive error:", ((_err$response3 = _t3.response) === null || _err$response3 === void 0 ? void 0 : _err$response3.data) || _t3);
+            console.error("Archive error:", ((_err$response5 = _t3.response) === null || _err$response5 === void 0 ? void 0 : _err$response5.data) || _t3);
             alert("Failed to archive item. Check console for details.");
           case 4:
             return _context3.a(2);
@@ -88098,7 +88420,7 @@ function Settings() {
   // Restore an archived item
   var handleRestore = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(item) {
-      var _err$response4, _t4;
+      var _err$response6, _t4;
       return _regenerator().w(function (_context4) {
         while (1) switch (_context4.p = _context4.n) {
           case 0:
@@ -88112,7 +88434,7 @@ function Settings() {
           case 2:
             _context4.p = 2;
             _t4 = _context4.v;
-            console.error("Restore error:", ((_err$response4 = _t4.response) === null || _err$response4 === void 0 ? void 0 : _err$response4.data) || _t4);
+            console.error("Restore error:", ((_err$response6 = _t4.response) === null || _err$response6 === void 0 ? void 0 : _err$response6.data) || _t4);
             alert("Failed to restore item. Check console for details.");
           case 3:
             return _context4.a(2);
@@ -88127,7 +88449,7 @@ function Settings() {
   // Permanently delete an item
   var handleDelete = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(item) {
-      var _err$response5, _t5;
+      var _err$response7, _t5;
       return _regenerator().w(function (_context5) {
         while (1) switch (_context5.p = _context5.n) {
           case 0:
@@ -88147,7 +88469,7 @@ function Settings() {
           case 3:
             _context5.p = 3;
             _t5 = _context5.v;
-            console.error("Delete error:", ((_err$response5 = _t5.response) === null || _err$response5 === void 0 ? void 0 : _err$response5.data) || _t5);
+            console.error("Delete error:", ((_err$response7 = _t5.response) === null || _err$response7 === void 0 ? void 0 : _err$response7.data) || _t5);
             alert("Failed to delete item. Check console for details.");
           case 4:
             return _context5.a(2);
